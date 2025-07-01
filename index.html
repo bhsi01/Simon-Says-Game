@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simon Says</title>
+    <style>
+
+        *{
+            margin:0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body{
+            background-color: black;
+            color:white;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container{
+            display: grid;
+            grid-template-columns:110px 110px;
+            grid-template-rows: 110px 110px;
+        }
+
+        .green{
+            height:100px;
+            width:100px;
+            background-color: green;
+        }
+
+        .red{
+            height:100px;
+            width:100px;
+            background-color: red;
+        }
+        .blue{
+            height:100px;
+            width:100px;
+            background-color: blue;
+        }
+        .yellow{
+            height:100px;
+            width:100px;
+            background-color: yellow;
+        }
+
+        .button{
+            position: absolute;
+            left:10px;
+            top:10px;
+            font-size: xx-large;        
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .level{
+            position: absolute;
+            left:10px;
+            top:10px;
+            display: none;
+            font-size: xx-large;
+            background-color: #007bff;
+            color:white;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+
+        @media (min-width:425px) {
+            .container{
+                display: grid;
+                grid-template-columns: 140px 140px;
+                grid-template-rows: 140px 140px;
+            }
+            .green,.red,.blue,.yellow{
+                height: 130px;
+                width: 130px;
+            }
+        }
+
+        @media (min-width:768px) {
+            .container{
+                display: grid;
+                grid-template-columns: 190px 190px;
+                grid-template-rows: 190px 190px;
+            }
+            .green,.red,.blue,.yellow{
+                height: 180px;
+                width: 180px;
+            }
+        } 
+
+        @media (min-width:1024px) {
+            .container{
+                display: grid;
+                grid-template-columns: 260px 260px;
+                grid-template-rows: 260px 260px;
+            }
+            .green,.red,.blue,.yellow{
+                height: 250px;
+                width: 250px;
+            }
+        }
+
+        @media (min-width:1440px) {
+            .container{
+                display: grid;
+                grid-template-columns: 310px 310px;
+                grid-template-rows: 310px 310px;
+            }
+            .green,.red,.blue,.yellow{
+                height: 300px;
+                width: 300px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <button class="button">Start</button>
+    <p class="level">Level 0</p>
+    
+        <div class="container">
+
+            <div class="green"></div>
+
+            <div class="red"></div>
+            
+            <div class="blue"></div>
+            
+            <div class="yellow"></div>
+
+        </div>
+
+    <script>
+
+        let container=document.querySelector(".container");
+        let green=document.querySelector(".green");
+        let red=document.querySelector(".red");
+        let blue=document.querySelector(".blue");
+        let yellow=document.querySelector(".yellow");
+        let button=document.querySelector(".button");
+        let level=document.querySelector(".level"); 
+
+        let arr=[];
+        let flag=false;
+        let index=0;
+
+        // this code will hide start and show current level
+        button.addEventListener("click",function(){
+            button.style.display="none";
+            level.style.display="block";
+        });
+
+        //as soon as the button is clicked the function is run which flashes all color in array
+        button.addEventListener("click",function(){
+            flashColor();
+        });
+
+        // this function generates new color
+        let addColor=function(){
+            generateRandom=Math.floor(Math.random()*4)+1;
+            let current="";
+            if (generateRandom===1)
+                current="green";
+            else if (generateRandom===2)
+                current="red";
+            else if (generateRandom===3)
+                current="blue";
+            else
+                current="yellow";
+            return current;
+        }
+
+        // this function flashes all color in array 
+        function flashColor(){
+            flag=false;
+            arr.push(addColor());
+            level.innerText=`Level ${arr.length}`;
+            function flash(element,duration,ogColor){
+                element.style.backgroundColor="white";
+                setTimeout(()=>{element.style.backgroundColor=ogColor},duration);
+            }
+
+            for (let i=0 ; i<arr.length ; i++) {
+                let e=arr[i];
+                if (e=="green") {
+                    setTimeout(()=>{flash(green,250,"green")},i*500);
+                }
+                else if (e=="red") {
+                    setTimeout(()=>{flash(red,250,"red")},i*500);
+                }
+                else if (e=="blue") {
+                    setTimeout(()=>{flash(blue,250,"blue")},i*500);
+                }
+                else if (e=="yellow") {
+                    setTimeout(()=>{flash(yellow,250,"yellow")},i*500);
+                }
+            }   
+            setTimeout(() => {
+                flag=true;
+            }, arr.length*550);         
+        }
+
+        // this event listener flashes the color clicked by user 
+        container.addEventListener("click",function(event){
+            if (flag==false)
+                return;
+            let input=event.target.className;
+            if (input=="green"){
+                    green.style.backgroundColor="white";
+                    setTimeout(() => {green.style.backgroundColor="green";}, 100);
+                }
+                else if (input=="red"){
+                    red.style.backgroundColor="white";
+                    setTimeout(() => {red.style.backgroundColor="red";}, 100);
+                }
+                else if (input=="blue"){
+                    blue.style.backgroundColor="white";
+                    setTimeout(() => {blue.style.backgroundColor="blue";}, 100);
+                }
+                else {
+                    yellow.style.backgroundColor="white";
+                    setTimeout(()=>{yellow.style.backgroundColor="yellow"},100);
+                }
+        });
+
+        //this event listener checks if the user has choosed correct color
+        container.addEventListener("click",function(){
+            if (flag==false)
+                return;
+            let input=event.target.className;
+            console.log(input);
+            if (index<arr.length-1){
+                if (arr[index]!=input){
+                    console.log("wrong button pressed restart");
+                    index=0;
+                    flag=false;
+                    reset();
+
+                }
+                else {
+                    console.log("correct button pressed");
+                    index++;
+                }
+            }
+            else if (index==arr.length-1){
+                if (arr[index]==input){
+                    console.log("go to next level");
+                    index=0;
+                    flag=false;
+                    nextLevel();
+                }
+                else{
+                    console.log("restart");
+                    index=0;
+                    flag=false;
+                    reset();
+                }
+            }
+            else {
+                console.log("out of index");
+                index=0;
+                flag=0;
+                reset();
+            }
+        });
+
+        // this function  resets the code to intial state 
+        function reset(){
+            let body=document.querySelector("body");
+            body.style.backgroundColor="white";
+            setTimeout(() => {
+                body.style.backgroundColor="black";    
+            }, 150);
+            arr=[];
+            button.style.display="block";
+            level.style.display="none";
+            flag=false;
+        }
+        
+        // this function sends the user to next level 
+        function nextLevel() {
+            let body=document.querySelector("body");
+            setTimeout(() => {
+                body.style.backgroundColor="black";
+                flashColor();    
+            }, 1000);
+            
+        }
+
+    </script>
+
+</body>
+</html>
